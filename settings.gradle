@@ -1,3 +1,0 @@
-include ':gdg'
-include 'library'
-include 'sample'
