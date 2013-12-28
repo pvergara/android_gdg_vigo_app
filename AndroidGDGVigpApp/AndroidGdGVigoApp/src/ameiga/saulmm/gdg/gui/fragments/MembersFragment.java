@@ -2,7 +2,8 @@ package ameiga.saulmm.gdg.gui.fragments;
 
 import static android.util.Log.d;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.List;
 
 import ameiga.saulmm.gdg.R;
 import ameiga.saulmm.gdg.data.api.ApiHandler;
@@ -19,7 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 public class MembersFragment extends Fragment {
-	private ArrayList<Member> members;
+	private List<Member> mMembers;
 
 
 	@Override
@@ -40,7 +41,7 @@ public class MembersFragment extends Fragment {
 
 	@Override
 	public void onSaveInstanceState (Bundle outState) {
-		outState.putSerializable("members", members);
+		outState.putSerializable("members", (Serializable) mMembers);
 		d("[DEBUG] fucverg.saulmm.gdg.gui.fragments.MembersFragment.onSaveInstanceState ", "Members saved...");
 
 		super.onSaveInstanceState(outState);
@@ -50,13 +51,13 @@ public class MembersFragment extends Fragment {
 
 	private void initApi () {
 		ApiHandler apiHanler = new ApiHandler(getActivity());
-		members = (ArrayList<Member>) apiHanler.getMembers();
+		mMembers = apiHanler.getMembersAndUpdateDB();
 	}
 
 	private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
 		@Override
 		public void onItemClick (AdapterView<?> adapterView, View view, int i, long l) {
-			String userID = members.get(i).getId();
+			String userID = mMembers.get(i).getId();
 
 			startActivity(new Intent(Intent.ACTION_VIEW,
 					Uri.parse("https://plus.google.com/"+userID+"/posts")));
@@ -69,7 +70,7 @@ public class MembersFragment extends Fragment {
 		ListView eventList = (ListView) rootView.findViewById(R.id.fm_member_list);
 		eventList.setOnItemClickListener(onItemClickListener);
 
-		MembersAdapter membersAdapter = new MembersAdapter(getActivity(), members);
+		MembersAdapter membersAdapter = new MembersAdapter(getActivity(), mMembers);
 		eventList.setAdapter(membersAdapter);
 	}
 
