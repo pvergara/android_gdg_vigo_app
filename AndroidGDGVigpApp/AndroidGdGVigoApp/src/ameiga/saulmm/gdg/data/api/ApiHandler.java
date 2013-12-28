@@ -94,7 +94,7 @@ public class ApiHandler {
 	 * TODO
 	 * @return
 	 */
-	public static String getGdgAboutURL () {
+	private static String getGdgAboutURL () {
 		String gdgAboutURL = new Uri.Builder()
 				.path(ABOUT_PEOPLE_END_POINT)
 				.appendPath(Configuration.GROUP_ID)
