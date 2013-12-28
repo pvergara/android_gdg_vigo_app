@@ -146,7 +146,7 @@ public class ApiHandler {
 	 * TODO
 	 * @return
 	 */
-	public List<Member> getMembers () {
+	public List<Member> getMembersAndUpdateDB () {
 		InputStream is = context.getResources().openRawResource(R.raw.members);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
 
