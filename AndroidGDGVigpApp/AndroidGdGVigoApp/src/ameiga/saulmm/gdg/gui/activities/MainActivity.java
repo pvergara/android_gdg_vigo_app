@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import ameiga.saulmm.gdg.R;
 import ameiga.saulmm.gdg.gui.adapters.PagerAdapter;
+import android.annotation.TargetApi;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -17,37 +18,35 @@ import android.view.Menu;
 
 import com.astuetz.PagerSlidingTabStrip;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainActivity extends FragmentActivity {
 	public static ArrayList<UpdateListener> upListeners = new ArrayList<UpdateListener>();
 	private PagerSlidingTabStrip tabs;
 
-
 	private final Handler handler = new Handler();
 	private Drawable oldBackground = null;
+
 	@Override
-	protected void onCreate (Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		initUI();
 	}
 
-
 	@Override
-	public boolean onCreateOptionsMenu (Menu menu) {
-//		if (selectedPage <= 1) {
-//			MenuInflater inflater = getMenuInflater();
-//			inflater.inflate(R.menu.pull, menu);
-//		}
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// if (selectedPage <= 1) {
+		// MenuInflater inflater = getMenuInflater();
+		// inflater.inflate(R.menu.pull, menu);
+		// }
 
 		return super.onCreateOptionsMenu(menu);
 	}
 
-
-
 	/**
-	 *  Depending of the bool configured by the screen size, loads the phone gui
+	 * Depending of the bool configured by the screen size, loads the phone gui
 	 */
-	private void initUI () {
+	private void initUI() {
 		boolean isTablet = getResources().getBoolean(R.bool.is_tablet);
 
 		if (!isTablet) {
@@ -56,13 +55,14 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
-
 	/**
-	 *  The normal UI is defined by the PagerSlidingTabStrip framework by Andreas Stuetz <andreas.stuetz@gmail.com>,
-	 *  a library to display a tabs ui like google play store app.
+	 * The normal UI is defined by the PagerSlidingTabStrip framework by Andreas
+	 * Stuetz <andreas.stuetz@gmail.com>, a library to display a tabs ui like
+	 * google play store app.
 	 */
-	private void initNormalUI () {
-		PagerAdapter catAdapter = new PagerAdapter(getSupportFragmentManager(), this);
+	private void initNormalUI() {
+		PagerAdapter catAdapter = new PagerAdapter(getSupportFragmentManager(),
+				this);
 
 		setContentView(R.layout.activity_main);
 
@@ -74,14 +74,17 @@ public class MainActivity extends FragmentActivity {
 		pager.setAdapter(catAdapter);
 		tabs.setViewPager(pager);
 
-		getActionBar().setTitle(getResources().getString(R.string.card_events));
+		String cardEvents = getResources().getString(R.string.card_events);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			getActionBar().setTitle(cardEvents);
+		}
 	}
 
-
 	/**
-	 *  This method changes the color of the action bar with the given color.
+	 * This method changes the color of the action bar with the given color.
+	 * 
 	 * @param newColor
-	 * by by Andreas Stuetz <andreas.stuetz@gmail.com>,
+	 *            by by Andreas Stuetz <andreas.stuetz@gmail.com>,
 	 */
 	private void changeColor(int newColor) {
 		tabs.setIndicatorColor(newColor);
@@ -90,8 +93,10 @@ public class MainActivity extends FragmentActivity {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 
 			Drawable colorDrawable = new ColorDrawable(newColor);
-			Drawable bottomDrawable = getResources().getDrawable(R.drawable.actionbar_bottom);
-			LayerDrawable ld = new LayerDrawable(new Drawable[] { colorDrawable, bottomDrawable });
+			Drawable bottomDrawable = getResources().getDrawable(
+					R.drawable.actionbar_bottom);
+			LayerDrawable ld = new LayerDrawable(new Drawable[] {
+					colorDrawable, bottomDrawable });
 
 			if (oldBackground == null) {
 
@@ -101,7 +106,8 @@ public class MainActivity extends FragmentActivity {
 					getActionBar().setBackgroundDrawable(ld);
 
 			} else {
-				TransitionDrawable td = new TransitionDrawable(new Drawable[] { oldBackground, ld });
+				TransitionDrawable td = new TransitionDrawable(new Drawable[] {
+						oldBackground, ld });
 
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
 					td.setCallback(drawableCallback);
@@ -118,7 +124,6 @@ public class MainActivity extends FragmentActivity {
 			getActionBar().setDisplayShowTitleEnabled(true);
 		}
 	}
-
 
 	private Drawable.Callback drawableCallback = new Drawable.Callback() {
 		@Override
@@ -137,43 +142,47 @@ public class MainActivity extends FragmentActivity {
 		}
 	};
 
-
 	ViewPager.OnPageChangeListener onChangeCallBack = new ViewPager.OnPageChangeListener() {
 		@Override
-		public void onPageSelected (int i) {
-			invalidateOptionsMenu(); // Fires onCreateOptionsMenu
+		public void onPageSelected(int i) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+				invalidateOptionsMenu(); // Fires onCreateOptionsMenu
 
-			switch (i) {
+				switch (i) {
 				case 0:
-					getActionBar().setTitle(getResources().getString(R.string.card_events));
+					getActionBar().setTitle(
+							getResources().getString(R.string.card_events));
 					changeColor(getResources().getColor(R.color.google_green));
 					break;
 
 				case 1:
-					getActionBar().setTitle(getResources().getString(R.string.card_posts));
+					getActionBar().setTitle(
+							getResources().getString(R.string.card_posts));
 					changeColor(getResources().getColor(R.color.google_red));
 					break;
 
 				case 2:
-					getActionBar().setTitle(getResources().getString(R.string.card_members));
+					getActionBar().setTitle(
+							getResources().getString(R.string.card_members));
 					changeColor(getResources().getColor(R.color.google_yellow));
 					break;
 
 				case 3:
-					getActionBar().setTitle(getResources().getString(R.string.app_name));
+					getActionBar().setTitle(
+							getResources().getString(R.string.app_name));
 					changeColor(getResources().getColor(R.color.google_blue));
 					break;
+				}
 			}
 		}
 
 		@Override
-		public void onPageScrolled (int i, float v, int i2) {}
-
+		public void onPageScrolled(int i, float v, int i2) {
+		}
 
 		@Override
-		public void onPageScrollStateChanged (int i) {}
+		public void onPageScrollStateChanged(int i) {
+		}
 	};
-
-
 
 }
